@@ -1,6 +1,7 @@
 import { ArrayList } from './components/ArrayList';
 import { JsonList } from './components/JsonList';
 import { ArrayListRowComponent } from './components/ListRowComponent';
+import { ChangeStatus } from './components/ChangeStatus';
 
 function App() {
     return (
@@ -8,6 +9,7 @@ function App() {
             <ArrayList />
             <ArrayListRowComponent />
             <JsonList />
+            <ChangeStatus />
         </>
     );
 }

@@ -6,5 +6,6 @@ export type TransactionType = {
 };
 
 export type TransactionProps = {
-  transaction: TransactionType;
+    transaction: TransactionType;
+    onMarkPaid: (id: number) => void;
 };
