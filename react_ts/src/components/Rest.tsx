@@ -1,26 +1,33 @@
 // src/components/ArrayList.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { TransactionRow } from './TransactionRow';
 import type { TransactionType } from '../types/transaction';
 
+const API_URL = 'https://t4app.fastapicloud.dev';
 
 export function Rest() {
     const [transactionsState, setTransactionsState] = useState<TransactionType[]>([]);
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null);
 
-
-    const markAsPaid = (id: number) => {
+    
+    const markAsPaid = useCallback((id: number) => {
         setTransactionsState((prev) =>
             prev.map((t) =>
                 t.id === id ? { ...t, status: "paid" } : t
             )
         );
-    };
+    }, []);  // 空依赖，函数永远不会变// 2. 用 useCallback 缓存函数
 
-    const pendingTotal = transactionsState
-        .filter((t) => t.status === "paid")
-        .reduce((sum, t) => sum + t.amount, 0);
+
+    const pendingTotal = useMemo(() => {
+        return transactionsState
+            .filter((t) => t.status === "paid")
+            .reduce((sum, t) => sum + t.amount, 0);
+    }, [transactionsState]);  // 只有 transactionsState 变化时才重新计算// 1. 用 useMemo 缓存计算结果
+
+
+
 
     useEffect(() => {
         const loadInvoices = async () => {
@@ -53,11 +60,18 @@ export function Rest() {
     }
 
     if (error) {
-        return <div style={{ padding: '20px', color: 'red' }}>Error: {error}</div>;
+        return (
+            <div style={{ padding: '20px', color: 'red' }}>
+                <p>what?: {error}</p>
+                <button onClick={() => window.location.reload()}>
+                    Retry
+                </button>
+            </div>
+        );
     }
 
     if (transactionsState.length === 0) {
-        return <div>No transactions</div>;   
+        return <div>No transactions</div>;
     }
 
     return (
