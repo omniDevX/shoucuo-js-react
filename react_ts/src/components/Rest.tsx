@@ -1,9 +1,10 @@
 // src/components/ArrayList.tsx
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { TransactionRow } from './TransactionRow';
+import { config } from '../config';
 import type { TransactionType } from '../types/transaction';
 
-const API_URL = 'https://t4app.fastapicloud.dev';
+const API_URL = config.api.baseUrl;
 
 export function Rest() {
     const [transactionsState, setTransactionsState] = useState<TransactionType[]>([]);
