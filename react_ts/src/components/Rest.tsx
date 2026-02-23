@@ -6,7 +6,9 @@ import type { TransactionType } from '../types/transaction';
 
 export function Rest() {
     const [transactionsState, setTransactionsState] = useState<TransactionType[]>([]);
-    
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null);
+
 
     const markAsPaid = (id: number) => {
         setTransactionsState((prev) =>
@@ -22,19 +24,41 @@ export function Rest() {
 
     useEffect(() => {
         const loadInvoices = async () => {
-            const res = await fetch("https://t4app.fastapicloud.dev/invoice");
-            const data = await res.json();
+            try {
+                setLoading(true)
+                const res = await fetch("https://t4app.fastapicloud.dev/invoice");
 
-            const normalized: TransactionType[] = data.map((item: TransactionType) => ({
-                ...item,
-                amount: Number(item.amount),
-            }));
+                if (!res.ok) { throw new Error(`failed: ${res.status}`) }
 
-            setTransactionsState(normalized);
+                const data = await res.json();
+
+                const normalized: TransactionType[] = data.map((item: TransactionType) => ({
+                    ...item,
+                    amount: Number(item.amount),
+                }));
+
+                setTransactionsState(normalized);
+            } catch (e) {
+                setError(e instanceof Error ? e.message : "Unknown error")
+            } finally {
+                setLoading(false)
+            }
         };
 
         loadInvoices();
     }, []);
+
+    if (loading) {
+        return <div style={{ padding: '20px' }}>⏳ Loading transactions...</div>;
+    }
+
+    if (error) {
+        return <div style={{ padding: '20px', color: 'red' }}>Error: {error}</div>;
+    }
+
+    if (transactionsState.length === 0) {
+        return <div>No transactions</div>;   
+    }
 
     return (
         <>
@@ -69,17 +93,17 @@ export function Rest() {
 
 
 
-    // useEffect(() => {
-    //     fetch("https://t4app.fastapicloud.dev/invoice")
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             // normalize API data
-    //             const normalized: TransactionType[] = data.map((item: TransactionType) => ({
-    //                 ...item,
-    //                 amount: Number(item.amount),
-    //             }));
+// useEffect(() => {
+//     fetch("https://t4app.fastapicloud.dev/invoice")
+//         .then((res) => res.json())
+//         .then((data) => {
+//             // normalize API data
+//             const normalized: TransactionType[] = data.map((item: TransactionType) => ({
+//                 ...item,
+//                 amount: Number(item.amount),
+//             }));
 
-    //             setTransactionsState(normalized);
-    //         });
-    // }, []);
+//             setTransactionsState(normalized);
+//         });
+// }, []);
 
