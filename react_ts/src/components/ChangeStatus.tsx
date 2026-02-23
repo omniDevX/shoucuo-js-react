@@ -16,9 +16,14 @@ export function ChangeStatus() {
         );
     };
 
+    const pendingTotal = transactionsState
+        .filter((t) => t.status === "paid")
+        .reduce((sum, t) => sum + t.amount, 0);
+
     return (
         <>
             <h4>Transactions Pending -- Complete</h4>
+            <h2>Pending Total: ${pendingTotal}</h2>
 
             {transactionsState.map((t) => (
                 <TransactionRow
