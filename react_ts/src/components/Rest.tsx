@@ -6,6 +6,7 @@ import type { TransactionType } from '../types/transaction';
 
 export function Rest() {
     const [transactionsState, setTransactionsState] = useState<TransactionType[]>([]);
+    
 
     const markAsPaid = (id: number) => {
         setTransactionsState((prev) =>
@@ -18,23 +19,6 @@ export function Rest() {
     const pendingTotal = transactionsState
         .filter((t) => t.status === "paid")
         .reduce((sum, t) => sum + t.amount, 0);
-
-
-    // useEffect(() => {
-    //     fetch("https://t4app.fastapicloud.dev/invoice")
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             // normalize API data
-    //             const normalized: TransactionType[] = data.map((item: TransactionType) => ({
-    //                 ...item,
-    //                 amount: Number(item.amount),
-    //             }));
-
-    //             setTransactionsState(normalized);
-    //         });
-    // }, []);
-
-
 
     useEffect(() => {
         const loadInvoices = async () => {
@@ -67,3 +51,35 @@ export function Rest() {
         </>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // useEffect(() => {
+    //     fetch("https://t4app.fastapicloud.dev/invoice")
+    //         .then((res) => res.json())
+    //         .then((data) => {
+    //             // normalize API data
+    //             const normalized: TransactionType[] = data.map((item: TransactionType) => ({
+    //                 ...item,
+    //                 amount: Number(item.amount),
+    //             }));
+
+    //             setTransactionsState(normalized);
+    //         });
+    // }, []);
+
