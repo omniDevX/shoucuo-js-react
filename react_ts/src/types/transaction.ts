@@ -4,3 +4,7 @@ export type TransactionType = {
     description: string;
     status: 'pending' | 'completed' | 'failed' | 'paid';
 };
+
+export type TransactionProps = {
+  transaction: TransactionType;
+};
